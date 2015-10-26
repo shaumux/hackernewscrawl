@@ -1,0 +1,84 @@
+<html>
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            $(".articleDelete").click(function(){
+                var articleId=$(this).parents('.articleContainer').attr('id');
+                var deleteUrl="/article/delete/"+articleId;
+                $(this).parents('.articleContainer').hide();
+                $.ajax({
+                    type:"POST",
+                    url: deleteUrl
+                });
+            });
+
+            $(".articleRead").click(function(){
+                var articleId=$(this).parents('.articleContainer').attr('id');
+                var readUrl="/article/read/"+articleId;
+                $(this).hide();
+                $(this).siblings('.articleTitle').css('font-weight','normal');
+                $.ajax({
+                    type:"POST",
+                    url: readUrl
+                });
+            });
+        });
+    </script>
+</head>
+
+{% load humanize  %}
+<span class="logut">
+    <a href="/accounts/logout/" style="float: right">Logout</a>
+</span>
+<h1>Articles</h1>
+<ul>
+{% for article in news_items %}
+    <div id="{{ article.id }}" class="articleContainer">
+        <li>
+            <span>
+                <p>
+                    <span style="font-weight: {% if not request.user in article.user_read.all %}bold{% else %}normal{% endif %};" class="articleTitle">
+                        <a href="{{ article.url }}">
+                            {{ article.title }}</a>
+                    </span>-
+                    {% if request.user not in article.user_read.all %}
+                        <span style="cusor:hand; cursor:pointer;text-decoration:underline; color: #0000FF" class="articleRead" >
+                            Mark read
+                        </span>
+                    {% endif %}
+                    &nbsp;&nbsp;
+                    <span style="cusor:hand; cursor:pointer;text-decoration:underline; color: #0000FF" class="articleDelete">
+                        Delete
+                    </span>
+                </p>
+                <p style="font-size: 12px;line-height: 1px;">
+                    <span class="postTime">
+                        {{ article.posted_on | naturaltime }}
+                    </span>
+                &nbsp;&nbsp;
+                <span class="comments">
+                    <a href="{{ article.hacker_news_url }}">
+                        {{ article.comments }} Comment{% if not article.comments == 1 %}s{% endif %}
+                    </a>
+                </span>
+                &nbsp;&nbsp;
+                <span class="upvotes">
+                    <a href="{{ article.hacker_news_url }}">
+                        {{ article.upvotes }} Upvote{% if not article.upvotes == 1 %}s{% endif %}
+                    </a>
+                </span>
+                </p>
+            </span>
+        </li>
+        <hr/>
+    </div>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>
+
+
+</html>
