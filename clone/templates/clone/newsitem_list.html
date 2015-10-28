@@ -15,11 +15,10 @@
                 });
             });
 
-            $(".articleRead").click(function(){
+            $(".articleTitle").click(function(){
                 var articleId=$(this).parents('.articleContainer').attr('id');
                 var readUrl="/article/read/"+articleId;
-                $(this).hide();
-                $(this).siblings('.articleTitle').css('font-weight','normal');
+                $(this).css('font-weight','normal');
                 $.ajax({
                     type:"POST",
                     url: readUrl
@@ -44,12 +43,6 @@
                         <a href="{{ article.url }}">
                             {{ article.title }}</a>
                     </span>-
-                    {% if request.user not in article.user_read.all %}
-                        <span style="cusor:hand; cursor:pointer;text-decoration:underline; color: #0000FF" class="articleRead" >
-                            Mark read
-                        </span>
-                    {% endif %}
-                    &nbsp;&nbsp;
                     <span style="cusor:hand; cursor:pointer;text-decoration:underline; color: #0000FF" class="articleDelete">
                         Delete
                     </span>
